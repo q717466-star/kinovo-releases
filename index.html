@@ -621,42 +621,69 @@
   <script>
     // DEFAULT CONFIGURATION FALLBACK
     const DEFAULT_CONFIG = {
-      version: 1,
-      comment: "Kinovo Dynamic Balancers Configuration - Edit this file to update mirrors without rebuilding APK",
-      balancers: {
-        collaps: {
-          base_url: "https://api.ortified.ws/",
-          referer: "https://api.ortified.ws/",
-          mirrors: [
-            "ortified.ws",
-            "namy.ws",
-            "embess.ws",
-            "femd.ws",
-            "nextembed.ws"
-          ]
-        },
-        alloha: {
-          base_url: "https://traff-as.stravers.live/",
-          token: "Lc2VoVjzUVy2QaZ6VlrVBkuzM0EkWo",
-          referer: "https://kinopub.my/",
-          player_referer: "https://traff-as.stravers.live/"
-        },
-        flixcdn: {
-          api_url: "https://api.flixcdn.space/api/search",
-          player_url: "https://tarantino.factorios.live/",
-          token: "8jeRPRC2bbzBL5Imho9y8IK8m54LQIT8UesS0nMUHia8tCLCNgAMcKTVrwlArVD6",
-          referer: "https://tarantino.factorios.live/"
-        },
-        hdvb: {
-          api_url: "https://api.manhan.one/lite/hdvb",
-          referer: "https://api.manhan.one/"
-        },
-        videohub: {
-          api_url: "https://nexsw.stull.xyz/lite/cdnvideohub",
-          referer: "https://nexsw.stull.xyz/"
-        }
+      "version": 2,
+      "comment": "Kinovo Dynamic Balancers Configuration - Edit this file to update mirrors without rebuilding APK",
+      "balancers": {
+            "collaps": {
+                  "base_url": "https://api.ortified.ws/",
+                  "referer": "https://api.ortified.ws/",
+                  "mirrors": [
+                        "ortified.ws",
+                        "namy.ws",
+                        "embess.ws",
+                        "femd.ws",
+                        "nextembed.ws"
+                  ]
+            },
+            "alloha": {
+                  "base_url": "https://traff-as.stravers.live/",
+                  "token": "Lc2VoVjzUVy2QaZ6VlrVBkuzM0EkWo",
+                  "referer": "https://kinopub.my/",
+                  "player_referer": "https://traff-as.stravers.live/"
+            },
+            "flixcdn": {
+                  "api_url": "https://api.flixcdn.space/api/search",
+                  "player_url": "https://tarantino.factorios.live/",
+                  "token": "8jeRPRC2bbzBL5Imho9y8IK8m54LQIT8UesS0nMUHia8tCLCNgAMcKTVrwlArVD6",
+                  "referer": "https://tarantino.factorios.live/"
+            },
+            "hdvb": {
+                  "api_url": "https://api.manhan.one/lite/hdvb",
+                  "referer": "https://api.manhan.one/"
+            },
+            "videohub": {
+                  "api_url": "https://nexsw.stull.xyz/lite/cdnvideohub",
+                  "referer": "https://nexsw.stull.xyz/"
+            },
+            "vibix": {
+                  "base_url": "https://vibix.org/",
+                  "embed_url": "https://vibix.org/embed/",
+                  "referer": "https://vibix.org/"
+            },
+            "ashdi": {
+                  "base_url": "https://ashdi.vip/",
+                  "referer": "https://ashdi.vip/"
+            },
+            "rezka": {
+                  "base_url": "https://hdrzk.org/",
+                  "mirrors": [
+                        "hdrzk.org",
+                        "hdrezka.me",
+                        "rezka.ag"
+                  ],
+                  "referer": "https://hdrzk.org/"
+            },
+            "kodik": {
+                  "base_url": "https://kodik-api.com/",
+                  "player_url": "https://kodik.info/",
+                  "referer": "https://kodik-api.com/"
+            },
+            "zetflix": {
+                  "base_url": "https://zetfix.online/",
+                  "referer": "https://zetfix.online/"
+            }
       }
-    };
+};
 
     let activeConfig = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
     let probeResults = {}; // targetKey -> { alive: bool, rtt: ms, statusText: string, httpCode: number }
