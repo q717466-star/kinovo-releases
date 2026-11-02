@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kinovo Balancer Pulse & Health Monitor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090b10;
+      --card-bg: rgba(22, 27, 34, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.25);
+      --success: #10b981;
+      --success-glow: rgba(16, 185, 129, 0.25);
+      --warning: #f59e0b;
+      --warning-glow: rgba(245, 158, 11, 0.25);
+      --danger: #ef4444;
+      --danger-glow: rgba(239, 68, 68, 0.25);
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: radial-gradient(circle at 50% 0%, #151e2e 0%, var(--bg) 60%);
+      color: var(--text);
+      font-family: var(--font);
+      min-height: 100vh;
+      padding: 2rem 1.5rem;
+      overflow-x: hidden;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* HEADER */
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      gap: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #0284c7, #38bdf8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      box-shadow: 0 0 25px var(--accent-glow);
+    }
+
+    .brand-title h1 {
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(90deg, #fff, #93c5fd);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-title p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.15rem;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--card-border);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      backdrop-filter: blur(10px);
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0284c7, #0ea5e9);
+      border-color: #38bdf8;
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #0369a1, #0284c7);
+      box-shadow: 0 6px 20px var(--accent-glow);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #059669, #10b981);
+      border-color: #34d399;
+      box-shadow: 0 4px 15px var(--success-glow);
+    }
+
+    /* STATS OVERVIEW */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .metric-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 1.25rem;
+      backdrop-filter: blur(12px);
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .metric-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: var(--accent);
+      opacity: 0.6;
+    }
+
+    .metric-card.success::before { background: var(--success); }
+    .metric-card.warning::before { background: var(--warning); }
+    .metric-card.danger::before { background: var(--danger); }
+
+    .metric-label {
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .metric-value {
+      font-size: 1.8rem;
+      font-weight: 800;
+      font-family: var(--mono);
+      display: flex;
+      align-items: baseline;
+      gap: 0.4rem;
+    }
+
+    .metric-sub {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* PULSE DOT */
+    .pulse-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 10px var(--success);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 var(--success-glow); }
+      70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(16, 185, 129, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    /* SETTINGS / CONFIG BAR */
+    .config-strip {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 0.9rem 1.25rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      font-size: 0.85rem;
+    }
+
+    .config-source {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .config-source code {
+      font-family: var(--mono);
+      background: rgba(0, 0, 0, 0.4);
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      color: var(--accent);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .proxy-selector {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    select, input[type="text"] {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      font-family: var(--font);
+      font-size: 0.82rem;
+      padding: 0.4rem 0.8rem;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    select:focus, input[type="text"]:focus {
+      border-color: var(--accent);
+    }
+
+    /* BALANCERS GRID */
+    .section-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .balancers-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .balancer-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 1.4rem;
+      backdrop-filter: blur(16px);
+      transition: border-color 0.2s ease;
+    }
+
+    .balancer-card:hover {
+      border-color: rgba(255, 255, 255, 0.16);
+    }
+
+    .balancer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .balancer-info h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .balancer-type {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+    }
+
+    .balancer-meta {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+
+    /* SIGNALS & TARGETS TABLE */
+    .targets-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+    }
+
+    .targets-table th {
+      text-align: left;
+      padding: 0.6rem 0.75rem;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .targets-table td {
+      padding: 0.75rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      vertical-align: middle;
+    }
+
+    .targets-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .target-url {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: #e5e7eb;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      word-break: break-all;
+    }
+
+    .role-badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .role-primary {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    .role-mirror {
+      background: rgba(156, 163, 175, 0.12);
+      color: #9ca3af;
+    }
+
+    /* SIGNAL BADGES */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.3rem 0.65rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    .status-alive {
+      background: rgba(16, 185, 129, 0.12);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .status-warn {
+      background: rgba(245, 158, 11, 0.12);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .status-dead {
+      background: rgba(239, 68, 68, 0.12);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    .status-pending {
+      background: rgba(156, 163, 175, 0.1);
+      color: #9ca3af;
+    }
+
+    .latency-bar-container {
+      width: 90px;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+
+    .latency-bar {
+      height: 100%;
+      border-radius: 3px;
+      transition: width 0.4s ease;
+    }
+
+    /* PROMOTION BUTTON */
+    .btn-promote {
+      padding: 0.3rem 0.6rem;
+      font-size: 0.72rem;
+      border-radius: 6px;
+      background: rgba(56, 189, 248, 0.1);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: #38bdf8;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .btn-promote:hover {
+      background: #0284c7;
+      color: white;
+    }
+
+    /* JSON MODAL & EXPORT */
+    .export-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 1.5rem;
+      backdrop-filter: blur(16px);
+      margin-bottom: 2rem;
+    }
+
+    .json-editor {
+      width: 100%;
+      height: 240px;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      color: #e5e7eb;
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      padding: 1rem;
+      line-height: 1.5;
+      resize: vertical;
+      margin-top: 1rem;
+      outline: none;
+    }
+
+    .json-editor:focus {
+      border-color: var(--accent);
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      padding: 2rem 0;
+      border-top: 1px solid var(--card-border);
+    }
+
+    .spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-top-color: currentColor;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- HEADER -->
+    <header>
+      <div class="brand">
+        <div class="logo-badge">📡</div>
+        <div class="brand-title">
+          <h1>Kinovo Balancer Signal & Health Monitor</h1>
+          <p>Интеллектуальный анализ доступности и сигналов балансеров без пересборки APK</p>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="btn" id="btn-load-remote" title="Загрузить свежий конфиг из GitHub">
+          <span>🔄</span> Загрузить с GitHub
+        </button>
+        <button class="btn btn-primary" id="btn-test-all">
+          <span id="scan-icon">⚡</span> Проверить все сигналы
+        </button>
+        <button class="btn btn-success" id="btn-optimize" title="Автоматически выбрать самые быстрые живые зеркала">
+          <span>✨</span> Авто-оптимизация
+        </button>
+      </div>
+    </header>
+
+    <!-- METRICS OVERVIEW -->
+    <div class="metrics-grid">
+      <div class="metric-card success">
+        <span class="metric-label">Сигнал системы</span>
+        <div class="metric-value" id="metric-health">
+          <span class="pulse-dot"></span> 100%
+        </div>
+        <span class="metric-sub" id="metric-health-sub">Все ключевые сервисы в сети</span>
+      </div>
+
+      <div class="metric-card">
+        <span class="metric-label">Живых адресов</span>
+        <div class="metric-value" id="metric-alive-count">
+          0 / 0
+        </div>
+        <span class="metric-sub">протестировано серверов и зеркал</span>
+      </div>
+
+      <div class="metric-card">
+        <span class="metric-label">Средний пинг (RTT)</span>
+        <div class="metric-value" id="metric-avg-rtt">
+          -- ms
+        </div>
+        <span class="metric-sub">задержка до балансеров</span>
+      </div>
+
+      <div class="metric-card warning">
+        <span class="metric-label">Рекомендация</span>
+        <div class="metric-value" style="font-size: 1.1rem; font-family: var(--font);" id="metric-recommend">
+          Анализ...
+        </div>
+        <span class="metric-sub" id="metric-recommend-sub">автоматический подбор лучшего зеркала</span>
+      </div>
+    </div>
+
+    <!-- CONFIGURATION & SOURCE STRIP -->
+    <div class="config-strip">
+      <div class="config-source">
+        <span>Источник:</span>
+        <code id="config-source-label">balancers.json (GitHub / Local)</code>
+      </div>
+
+      <div class="proxy-selector">
+        <label for="probe-mode" style="color: var(--text-muted);">Режим замера:</label>
+        <select id="probe-mode">
+          <option value="direct">Прямой сигнал (Browser Ping + Timing)</option>
+          <option value="corsproxy">Через CORS-Proxy (Детальный HTTP)</option>
+          <option value="local">Локальный Python/Node API (если запущен)</option>
+        </select>
+
+        <label style="margin-left: 1rem; display: flex; align-items: center; gap: 0.4rem; cursor: pointer; color: var(--text-muted);">
+          <input type="checkbox" id="auto-refresh-toggle">
+          <span>Пульс (каждые 30 сек)</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- BALANCERS SIGNAL LIST -->
+    <div class="section-title">
+      <span>📊 Анализ балансеров и зеркал</span>
+    </div>
+
+    <div class="balancers-list" id="balancers-container">
+      <!-- Will be populated dynamically by JS -->
+    </div>
+
+    <!-- EXPORT & JSON SYNC SECTION -->
+    <div class="export-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <h3 style="font-size: 1.15rem; font-weight: 700;">💾 Экспорт рабочего balancers.json</h3>
+          <p style="font-size: 0.82rem; color: var(--text-muted); margin-top: 0.2rem;">
+            Скопируйте этот JSON или скачайте файл для обновления на GitHub без пересборки APK приложения.
+          </p>
+        </div>
+        <div style="display: flex; gap: 0.6rem;">
+          <button class="btn" id="btn-copy-json">📋 Скопировать JSON</button>
+          <button class="btn btn-primary" id="btn-download-json">⬇️ Скачать balancers.json</button>
+        </div>
+      </div>
+      <textarea class="json-editor" id="json-output" spellcheck="false"></textarea>
+    </div>
+
+    <footer>
+      <p>Kinovo Native Ecosystem • 100% Native Kotlin & Dynamic Remote Config • 2026</p>
+    </footer>
+  </div>
+
+  <script>
+    // DEFAULT CONFIGURATION FALLBACK
+    const DEFAULT_CONFIG = {
+      version: 1,
+      comment: "Kinovo Dynamic Balancers Configuration - Edit this file to update mirrors without rebuilding APK",
+      balancers: {
+        collaps: {
+          base_url: "https://api.ortified.ws/",
+          referer: "https://api.ortified.ws/",
+          mirrors: [
+            "ortified.ws",
+            "namy.ws",
+            "embess.ws",
+            "femd.ws",
+            "nextembed.ws"
+          ]
+        },
+        alloha: {
+          base_url: "https://traff-as.stravers.live/",
+          token: "Lc2VoVjzUVy2QaZ6VlrVBkuzM0EkWo",
+          referer: "https://kinopub.my/",
+          player_referer: "https://traff-as.stravers.live/"
+        },
+        flixcdn: {
+          api_url: "https://api.flixcdn.space/api/search",
+          player_url: "https://tarantino.factorios.live/",
+          token: "8jeRPRC2bbzBL5Imho9y8IK8m54LQIT8UesS0nMUHia8tCLCNgAMcKTVrwlArVD6",
+          referer: "https://tarantino.factorios.live/"
+        },
+        hdvb: {
+          api_url: "https://api.manhan.one/lite/hdvb",
+          referer: "https://api.manhan.one/"
+        },
+        videohub: {
+          api_url: "https://nexsw.stull.xyz/lite/cdnvideohub",
+          referer: "https://nexsw.stull.xyz/"
+        }
+      }
+    };
+
+    let activeConfig = JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+    let probeResults = {}; // targetKey -> { alive: bool, rtt: ms, statusText: string, httpCode: number }
+    let autoRefreshTimer = null;
+
+    // REMOTE CONFIG URLS
+    const CONFIG_URLS = [
+      "https://cdn.jsdelivr.net/gh/q717466-star/kinovo-releases@main/balancers.json",
+      "https://raw.githubusercontent.com/q717466-star/kinovo-releases/main/balancers.json",
+      "balancers.json"
+    ];
+
+    // INIT
+    async function init() {
+      setupEventListeners();
+      await loadRemoteConfig();
+      renderUI();
+      testAllSignals();
+    }
+
+    function setupEventListeners() {
+      document.getElementById('btn-test-all').addEventListener('click', () => testAllSignals());
+      document.getElementById('btn-load-remote').addEventListener('click', async () => {
+        await loadRemoteConfig(true);
+        renderUI();
+        testAllSignals();
+      });
+      document.getElementById('btn-optimize').addEventListener('click', autoOptimizeMirrors);
+      document.getElementById('btn-copy-json').addEventListener('click', copyJsonToClipboard);
+      document.getElementById('btn-download-json').addEventListener('click', downloadJsonFile);
+      document.getElementById('json-output').addEventListener('input', onJsonManualEdit);
+      
+      document.getElementById('auto-refresh-toggle').addEventListener('change', (e) => {
+        if (e.target.checked) {
+          autoRefreshTimer = setInterval(() => testAllSignals(true), 30000);
+        } else {
+          clearInterval(autoRefreshTimer);
+        }
+      });
+    }
+
+    async function loadRemoteConfig(force = false) {
+      for (const url of CONFIG_URLS) {
+        try {
+          const resp = await fetch(url + (force ? `?t=${Date.now()}` : ''));
+          if (resp.ok) {
+            const json = await resp.json();
+            if (json && json.balancers) {
+              activeConfig = json;
+              document.getElementById('config-source-label').innerText = url;
+              console.log("Loaded config from", url);
+              return;
+            }
+          }
+        } catch (e) {
+          console.warn("Failed fetching config from", url, e.message);
+        }
+      }
+    }
+
+    function renderUI() {
+      const container = document.getElementById('balancers-container');
+      container.innerHTML = '';
+      const balancers = activeConfig.balancers || {};
+
+      for (const [key, bData] of Object.entries(balancers)) {
+        const card = document.createElement('div');
+        card.className = 'balancer-card';
+        card.id = `card-${key}`;
+
+        const isCollaps = key === 'collaps';
+        const titleName = key === 'collaps' ? 'Collaps HD (Плеер)' :
+                          key === 'alloha' ? 'Alloha / KinoPub (4K UHD)' :
+                          key === 'flixcdn' ? 'FlixCDN (Поиск и Плеер)' :
+                          key === 'hdvb' ? 'HDVB' :
+                          key === 'videohub' ? 'VideoHUB CDN' : key.toUpperCase();
+
+        const targets = [];
+        if (bData.base_url) {
+          targets.push({ id: `${key}-base`, url: bData.base_url, role: 'Основной', isPrimary: true });
+        }
+        if (bData.api_url) {
+          targets.push({ id: `${key}-api`, url: bData.api_url, role: 'API Поиска', isPrimary: true });
+        }
+        if (bData.player_url) {
+          targets.push({ id: `${key}-player`, url: bData.player_url, role: 'Плеер', isPrimary: false });
+        }
+        if (Array.isArray(bData.mirrors)) {
+          bData.mirrors.forEach(m => {
+            const mUrl = m.startsWith('http') ? m : `https://${m}/`;
+            targets.push({ id: `${key}-mirror-${m}`, url: mUrl, mirrorDomain: m, role: 'Зеркало', isPrimary: false });
+          });
+        }
+
+        let tableRows = targets.map(t => {
+          return `
+            <tr id="row-${t.id}">
+              <td style="width: 100px;">
+                <span class="role-badge ${t.isPrimary ? 'role-primary' : 'role-mirror'}">${t.role}</span>
+              </td>
+              <td>
+                <div class="target-url">
+                  <span>${escapeHtml(t.url)}</span>
+                  ${t.mirrorDomain && isCollaps ? `
+                    <button class="btn-promote" onclick="promoteMirror('${t.mirrorDomain}')" title="Сделать этот домен основным base_url">
+                      Сделать base
+                    </button>
+                  ` : ''}
+                </div>
+              </td>
+              <td style="width: 140px;" id="status-cell-${t.id}">
+                <span class="status-badge status-pending">Ожидание...</span>
+              </td>
+              <td style="width: 130px;" id="rtt-cell-${t.id}">
+                <span style="font-family: var(--mono); color: var(--text-muted);">--</span>
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+        card.innerHTML = `
+          <div class="balancer-header">
+            <div class="balancer-info">
+              <h3>${titleName} <span class="balancer-type">${key}</span></h3>
+              <div class="balancer-meta">
+                ${bData.referer ? `Referer: <code>${escapeHtml(bData.referer)}</code>` : ''}
+                ${bData.token ? ` • Токен: <code>${escapeHtml(bData.token.substring(0, 10))}...</code>` : ''}
+              </div>
+            </div>
+            <div id="balancer-summary-${key}">
+              <span class="status-badge status-pending">Проверка...</span>
+            </div>
+          </div>
+          <table class="targets-table">
+            <thead>
+              <tr>
+                <th>Роль</th>
+                <th>Адрес / Зеркало</th>
+                <th>Сигнал</th>
+                <th>Задержка (RTT)</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${tableRows}
+            </tbody>
+          </table>
+        `;
+        container.appendChild(card);
+      }
+
+      updateJsonOutput();
+    }
+
+    // PROBE ENGINE
+    async function testAllSignals(silent = false) {
+      const scanBtn = document.getElementById('btn-test-all');
+      const scanIcon = document.getElementById('scan-icon');
+      if (!silent) {
+        scanBtn.disabled = true;
+        scanIcon.innerHTML = '<span class="spinner"></span>';
+      }
+
+      const mode = document.getElementById('probe-mode').value;
+      const allTargets = [];
+
+      for (const [key, bData] of Object.entries(activeConfig.balancers || {})) {
+        if (bData.base_url) allTargets.push({ key, id: `${key}-base`, url: bData.base_url, isBase: true });
+        if (bData.api_url) allTargets.push({ key, id: `${key}-api`, url: bData.api_url });
+        if (bData.player_url) allTargets.push({ key, id: `${key}-player`, url: bData.player_url });
+        if (Array.isArray(bData.mirrors)) {
+          bData.mirrors.forEach(m => {
+            const mUrl = m.startsWith('http') ? m : `https://${m}/`;
+            allTargets.push({ key, id: `${key}-mirror-${m}`, url: mUrl, mirrorDomain: m });
+          });
+        }
+      }
+
+      const promises = allTargets.map(t => testSingleSignal(t, mode));
+      await Promise.all(promises);
+
+      computeMetrics();
+      if (!silent) {
+        scanBtn.disabled = false;
+        scanIcon.innerText = '⚡';
+      }
+    }
+
+    async function testSingleSignal(target, mode) {
+      const statusCell = document.getElementById(`status-cell-${target.id}`);
+      const rttCell = document.getElementById(`rtt-cell-${target.id}`);
+      if (statusCell) {
+        statusCell.innerHTML = '<span class="status-badge status-pending"><span class="spinner"></span> Замер...</span>';
+      }
+
+      const startTime = performance.now();
+      let isAlive = false;
+      let rtt = 0;
+      let statusText = "Оффлайн";
+      let statusClass = "status-dead";
+
+      try {
+        if (mode === 'local') {
+          // Local Python / Node API bridge
+          const resp = await fetch(`/api/ping?url=${encodeURIComponent(target.url)}`);
+          rtt = Math.round(performance.now() - startTime);
+          const data = await resp.json();
+          isAlive = data.alive;
+          rtt = data.rtt || rtt;
+          statusText = data.statusText || (isAlive ? "Жив" : "Мёртв");
+        } else if (mode === 'corsproxy') {
+          // Check via fast CORS proxy for real HTTP status
+          const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(target.url)}&t=${Date.now()}`;
+          const ctrl = new AbortController();
+          const timer = setTimeout(() => ctrl.abort(), 6000);
+          const resp = await fetch(proxyUrl, { signal: ctrl.signal });
+          clearTimeout(timer);
+          rtt = Math.round(performance.now() - startTime);
+          const data = await resp.json();
+          const code = data.status?.http_code;
+          // Any response from server (even 401, 403, 404, 503) means the domain is alive and responding!
+          if (code && code > 0) {
+            isAlive = true;
+            statusText = `HTTP ${code}`;
+          } else {
+            isAlive = false;
+            statusText = "Блокировка";
+          }
+        } else {
+          // Direct Mode: Browser fetch with no-cors.
+          // Resolves DNS and performs real TCP/TLS handshake.
+          const ctrl = new AbortController();
+          const timer = setTimeout(() => ctrl.abort(), 5000);
+          await fetch(target.url, {
+            mode: 'no-cors',
+            cache: 'no-cache',
+            signal: ctrl.signal
+          });
+          clearTimeout(timer);
+          rtt = Math.round(performance.now() - startTime);
+          isAlive = true;
+          statusText = rtt < 400 ? "Отличный" : "Жив";
+        }
+      } catch (err) {
+        rtt = Math.round(performance.now() - startTime);
+        isAlive = false;
+        statusText = err.name === 'AbortError' ? "Таймаут >5с" : "Мёртв / Блок";
+      }
+
+      if (isAlive) {
+        if (rtt < 800) {
+          statusClass = "status-alive";
+          statusText = `🟢 ${statusText}`;
+        } else {
+          statusClass = "status-warn";
+          statusText = `🟡 Медленный (${rtt}ms)`;
+        }
+      } else {
+        statusClass = "status-dead";
+        statusText = `🔴 ${statusText}`;
+      }
+
+      probeResults[target.id] = { alive: isAlive, rtt, statusText, url: target.url, key: target.key, isBase: target.isBase, mirrorDomain: target.mirrorDomain };
+
+      if (statusCell) {
+        statusCell.innerHTML = `<span class="status-badge ${statusClass}">${statusText}</span>`;
+      }
+      if (rttCell) {
+        const barWidth = Math.min(100, Math.max(5, Math.round((rtt / 2000) * 100)));
+        const barColor = !isAlive ? '#ef4444' : rtt < 800 ? '#10b981' : '#f59e0b';
+        rttCell.innerHTML = `
+          <div style="font-family: var(--mono); font-weight: 600; color: ${barColor}">${rtt} ms</div>
+          <div class="latency-bar-container">
+            <div class="latency-bar" style="width: ${barWidth}%; background: ${barColor}"></div>
+          </div>
+        `;
+      }
+    }
+
+    function computeMetrics() {
+      const results = Object.values(probeResults);
+      if (results.length === 0) return;
+
+      const alive = results.filter(r => r.alive);
+      const aliveCount = alive.length;
+      const total = results.length;
+      const healthPct = Math.round((aliveCount / total) * 100);
+
+      document.getElementById('metric-alive-count').innerText = `${aliveCount} / ${total}`;
+
+      const healthCard = document.querySelector('.metric-card.success');
+      const healthVal = document.getElementById('metric-health');
+      const healthSub = document.getElementById('metric-health-sub');
+
+      healthVal.innerHTML = `<span class="pulse-dot" style="background: ${healthPct > 70 ? '#10b981' : healthPct > 40 ? '#f59e0b' : '#ef4444'}"></span> ${healthPct}%`;
+      healthSub.innerText = healthPct > 80 ? "Отличная стабильность" : healthPct > 50 ? "Часть зеркал недоступна" : "Внимание! Сбои балансеров";
+
+      const totalRtt = alive.reduce((acc, r) => acc + r.rtt, 0);
+      const avgRtt = alive.length ? Math.round(totalRtt / alive.length) : 0;
+      document.getElementById('metric-avg-rtt').innerText = `${avgRtt} ms`;
+
+      // Analyse Collaps mirrors
+      const collapsBase = results.find(r => r.id === 'collaps-base');
+      const collapsMirrors = results.filter(r => r.key === 'collaps' && r.mirrorDomain && r.alive);
+      collapsMirrors.sort((a, b) => a.rtt - b.rtt);
+
+      const recVal = document.getElementById('metric-recommend');
+      const recSub = document.getElementById('metric-recommend-sub');
+
+      if (collapsBase && !collapsBase.alive && collapsMirrors.length > 0) {
+        recVal.innerHTML = `Сменить base_url!`;
+        recSub.innerHTML = `Рекомендуем зеркало: <b>${collapsMirrors[0].mirrorDomain}</b> (${collapsMirrors[0].rtt}ms)`;
+      } else if (collapsMirrors.length > 0 && collapsBase && collapsMirrors[0].rtt < (collapsBase.rtt - 300)) {
+        recVal.innerHTML = `Зеркало быстрее`;
+        recSub.innerHTML = `<b>${collapsMirrors[0].mirrorDomain}</b> на ${collapsBase.rtt - collapsMirrors[0].rtt}ms быстрее`;
+      } else {
+        recVal.innerHTML = `Все в норме`;
+        recSub.innerHTML = `Текущий base_url работает стабильно`;
+      }
+
+      // Update per-balancer cards summary
+      for (const key of Object.keys(activeConfig.balancers || {})) {
+        const bResults = results.filter(r => r.key === key);
+        const bAlive = bResults.filter(r => r.alive).length;
+        const bSummary = document.getElementById(`balancer-summary-${key}`);
+        if (bSummary) {
+          const badgeClass = bAlive === bResults.length ? 'status-alive' : bAlive > 0 ? 'status-warn' : 'status-dead';
+          bSummary.innerHTML = `<span class="status-badge ${badgeClass}">${bAlive} / ${bResults.length} активны</span>`;
+        }
+      }
+    }
+
+    function promoteMirror(domain) {
+      if (!activeConfig.balancers?.collaps) return;
+      const newUrl = `https://${domain}/`;
+      activeConfig.balancers.collaps.base_url = newUrl;
+      activeConfig.balancers.collaps.referer = newUrl;
+      activeConfig.version = (activeConfig.version || 1) + 1;
+      alert(`Зеркало ${domain} установлено в качестве основного base_url! Обновлённая версия v${activeConfig.version}.`);
+      renderUI();
+      testAllSignals();
+    }
+
+    function autoOptimizeMirrors() {
+      const collapsMirrors = Object.values(probeResults).filter(r => r.key === 'collaps' && r.mirrorDomain && r.alive);
+      if (collapsMirrors.length === 0) {
+        alert("Нет доступных проверенных зеркал для авто-оптимизации. Запустите замер сначала.");
+        return;
+      }
+      collapsMirrors.sort((a, b) => a.rtt - b.rtt);
+      const fastest = collapsMirrors[0];
+      promoteMirror(fastest.mirrorDomain);
+    }
+
+    function updateJsonOutput() {
+      document.getElementById('json-output').value = JSON.stringify(activeConfig, null, 2);
+    }
+
+    function onJsonManualEdit(e) {
+      try {
+        const parsed = JSON.parse(e.target.value);
+        if (parsed && parsed.balancers) {
+          activeConfig = parsed;
+          renderUI();
+        }
+      } catch (err) {
+        // ignore until valid json
+      }
+    }
+
+    function copyJsonToClipboard() {
+      const text = document.getElementById('json-output').value;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('btn-copy-json');
+        btn.innerText = "✅ Скопировано!";
+        setTimeout(() => btn.innerText = "📋 Скопировать JSON", 2000);
+      });
+    }
+
+    function downloadJsonFile() {
+      const text = document.getElementById('json-output').value;
+      const blob = new Blob([text], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "balancers.json";
+      a.click();
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // Launch
+    window.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
