@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "comment": "Kinovo Dynamic Balancers Configuration - Edit this file to update mirrors without rebuilding APK",
+  "balancers": {
+    "collaps": {
+      "base_url": "https://api.ortified.ws/",
+      "referer": "https://api.ortified.ws/",
+      "mirrors": [
+        "ortified.ws",
+        "namy.ws",
+        "embess.ws",
+        "femd.ws",
+        "nextembed.ws"
+      ]
+    },
+    "alloha": {
+      "base_url": "https://traff-as.stravers.live/",
+      "token": "Lc2VoVjzUVy2QaZ6VlrVBkuzM0EkWo",
+      "referer": "https://kinopub.my/",
+      "player_referer": "https://traff-as.stravers.live/"
+    },
+    "flixcdn": {
+      "api_url": "https://api.flixcdn.space/api/search",
+      "player_url": "https://tarantino.factorios.live/",
+      "token": "8jeRPRC2bbzBL5Imho9y8IK8m54LQIT8UesS0nMUHia8tCLCNgAMcKTVrwlArVD6",
+      "referer": "https://tarantino.factorios.live/"
+    },
+    "hdvb": {
+      "api_url": "https://api.manhan.one/lite/hdvb",
+      "referer": "https://api.manhan.one/"
+    },
+    "videohub": {
+      "api_url": "https://nexsw.stull.xyz/lite/cdnvideohub",
+      "referer": "https://nexsw.stull.xyz/"
+    }
+  }
+}
