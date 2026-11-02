@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "comment": "Kinovo Dynamic Balancers Configuration - Edit this file to update mirrors without rebuilding APK",
   "balancers": {
     "collaps": {
@@ -32,6 +32,33 @@
     "videohub": {
       "api_url": "https://nexsw.stull.xyz/lite/cdnvideohub",
       "referer": "https://nexsw.stull.xyz/"
+    },
+    "vibix": {
+      "base_url": "https://vibix.org/",
+      "embed_url": "https://vibix.org/embed/",
+      "referer": "https://vibix.org/"
+    },
+    "ashdi": {
+      "base_url": "https://ashdi.vip/",
+      "referer": "https://ashdi.vip/"
+    },
+    "rezka": {
+      "base_url": "https://hdrzk.org/",
+      "mirrors": [
+        "hdrzk.org",
+        "hdrezka.me",
+        "rezka.ag"
+      ],
+      "referer": "https://hdrzk.org/"
+    },
+    "kodik": {
+      "base_url": "https://kodik-api.com/",
+      "player_url": "https://kodik.info/",
+      "referer": "https://kodik-api.com/"
+    },
+    "zetflix": {
+      "base_url": "https://zetfix.online/",
+      "referer": "https://zetfix.online/"
     }
   }
 }
