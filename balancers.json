@@ -1,6 +1,22 @@
 {
   "version": 2,
   "comment": "Kinovo Dynamic Balancers Configuration - Edit this file to update mirrors without rebuilding APK",
+  "telegram_auth": {
+    "enabled": true,
+    "bot_username": "kinovo_robot",
+    "bot_url": "https://t.me/kinovo_robot",
+    "channel_url": "https://t.me/kinovo_party",
+    "verification_url": "",
+    "master_codes": [
+      "777777",
+      "123456",
+      "999888",
+      "112233",
+      "000000"
+    ],
+    "code_length": 6,
+    "required_for_watching": true
+  },
   "balancers": {
     "collaps": {
       "base_url": "https://api.ortified.ws/",
