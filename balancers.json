@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "comment": "Kinovo Dynamic Balancers Configuration - Edit this file to update mirrors without rebuilding APK",
   "telegram_auth": {
     "enabled": true,
@@ -18,6 +18,17 @@
     "required_for_watching": true
   },
   "balancers": {
+    "kinopub": {
+      "base_url": "https://api.nextembed.ws/",
+      "referer": "https://kinopub.my/",
+      "mirrors": [
+        "nextembed.ws",
+        "ortified.ws",
+        "namy.ws",
+        "embess.ws",
+        "femd.ws"
+      ]
+    },
     "collaps": {
       "base_url": "https://api.ortified.ws/",
       "referer": "https://api.ortified.ws/",
