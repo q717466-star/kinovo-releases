@@ -1,0 +1,8 @@
+{
+  "version": "1.2.71",
+  "versionCode": 98,
+  "changelog": "• Исправлена ориентация экрана: гарантированный возврат в вертикальный режим после плеера\n• Добавлены 4 стиля нижней панели в Настройки (Остров, Монолит, Капсула, Слайдер)\n• Прямой CDN-канал обновления без ошибок HTTP 504",
+  "downloadUrl": "https://raw.githubusercontent.com/q717466-star/kinovo-releases/main/app-release.apk",
+  "apkSize": 81326418,
+  "sha256": "ab8231b9d0699429a0dc410d487de9ba29a11a84a81831179f90ab954bbfc0b8"
+}
