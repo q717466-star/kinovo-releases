@@ -1,8 +1,6 @@
 {
-  "version": "1.2.73",
-  "versionCode": 100,
-  "changelog": "• Новая иконка: градиентная K с золотым Play-треугольником\n• Новая анимация запуска: вспышка Play-треугольника внутри K\n• Монолит и авто-скрытие панели при скролле\n• Прямой CDN-канал обновления без HTTP 504",
-  "downloadUrl": "https://raw.githubusercontent.com/q717466-star/kinovo-releases/main/app-release.apk",
-  "apkSize": 81334698,
-  "sha256": "16f973b11abd8866f90463a503481b95e3640bdfec178c2250fc4e255ef2d314"
+    "apkUrl":  "https://raw.githubusercontent.com/q717466-star/kinovo-releases/main/app-release.apk",
+    "changelog":  "v1.2.74: Масштабное обновление Android TV в стиле Apple TV 4K (tvOS) — живая верхняя сцена предпросмотра (Dynamic Showcase Stage) с 16:9 фоном и бейджами 4K/Dolby Vision/Atmos без просадок FPS, точное сохранение фокуса карточки при возврате, долгое нажатие OK/MENU для добавления в Избранное (★), голосовой поиск с пульта и быстрые жанровые чипсы, раздел «Медиатека» и нативные «Настройки ТВ», согласование частоты кадров 24p (Match Frame Rate), приоритет чипов Amlogic/MediaTek/Realtek и фирменный баннер на домашнем экране ТВ.",
+    "versionCode":  101,
+    "versionName":  "1.2.74"
 }
