@@ -1,8 +1,8 @@
 {
-  "version": "1.2.72",
-  "versionCode": 99,
-  "changelog": "• Навигация «Монолит» (Edge-to-Edge) по умолчанию\n• Плавное авто-скрытие панели при скролле вниз (Scroll-aware Auto-Hide) и возврат при скролле вверх\n• Полное отключение эффекта/индикатора нажатия на кнопках навигации\n• Прямой CDN-канал обновления без ошибок HTTP 504",
+  "version": "1.2.73",
+  "versionCode": 100,
+  "changelog": "• Новая иконка: градиентная K с золотым Play-треугольником\n• Новая анимация запуска: вспышка Play-треугольника внутри K\n• Монолит и авто-скрытие панели при скролле\n• Прямой CDN-канал обновления без HTTP 504",
   "downloadUrl": "https://raw.githubusercontent.com/q717466-star/kinovo-releases/main/app-release.apk",
-  "apkSize": 81325862,
-  "sha256": "afad5ed106ef881e5fac6b07f0b8d817717b2ac23a944b4122e3fd4dca00229c"
+  "apkSize": 81334698,
+  "sha256": "16f973b11abd8866f90463a503481b95e3640bdfec178c2250fc4e255ef2d314"
 }
