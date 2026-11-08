@@ -1,11 +1,11 @@
 {
-  "version": 4,
+  "version": 7,
   "comment": "Kinovo Dynamic Balancers Configuration - Edit this file to update mirrors without rebuilding APK",
   "telegram_auth": {
-    "enabled": true,
-    "bot_username": "kinovo_robot",
-    "bot_url": "https://t.me/kinovo_robot",
-    "channel_url": "https://t.me/kinovo_party",
+    "enabled": false,
+    "bot_username": "kinovo_app",
+    "bot_url": "https://t.me/kinovo_app",
+    "channel_url": "https://t.me/kinovo_app",
     "verification_url": "",
     "master_codes": [
       "777777",
@@ -15,7 +15,7 @@
       "000000"
     ],
     "code_length": 6,
-    "required_for_watching": true
+    "required_for_watching": false
   },
   "balancers": {
     "kinopub": {
@@ -37,7 +37,11 @@
         "namy.ws",
         "embess.ws",
         "femd.ws",
-        "nextembed.ws"
+        "nextembed.ws",
+        "embandr.ws",
+        "lateremb.ws",
+        "niteface.ws",
+        "twemd.ws"
       ]
     },
     "alloha": {
@@ -65,6 +69,12 @@
       "api_url": "https://nexsw.stull.xyz/lite/cdnvideohub",
       "referer": "https://nexsw.stull.xyz/"
     },
+    "veoveo": {
+      "base_url": "https://spider01.com/api/",
+      "stream_url": "https://spider01.com/api/veoveo/stream",
+      "referer": "https://seena.tv/",
+      "player_referer": "https://spider01.com/"
+    },
     "vibix": {
       "base_url": "https://vibix.org/",
       "embed_url": "https://vibix.org/embed/",
@@ -86,11 +96,26 @@
     "kodik": {
       "base_url": "https://kodik-api.com/",
       "player_url": "https://kodik.info/",
-      "referer": "https://kodik-api.com/"
+      "referer": "https://kodikplayer.com/",
+      "token": "41dd95f84c21719b09d6c71182237a25"
     },
     "zetflix": {
       "base_url": "https://zetfix.online/",
       "referer": "https://zetfix.online/"
+    },
+    "filmix": {
+      "base_url": "http://filmixapp.cyou/api/v2/",
+      "referer": "http://filmixapp.cyou/",
+      "token": "aaaabbbbccccddddeeeeffffaaaabbbb",
+      "mirrors": [
+        "filmixapp.cyou",
+        "filmixapp.vip",
+        "filmix.gg"
+      ]
+    },
+    "anilibria": {
+      "base_url": "https://api.anilibria.app/api/v1/",
+      "referer": "https://anilibria.app/"
     }
   }
 }
