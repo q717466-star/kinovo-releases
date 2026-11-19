@@ -4,13 +4,6 @@
   "owner_telegram": "kinovo_app",
   "offline_grace_hours": 24,
   "message": "Приложение Kinovo доступно только по приглашению. Отправьте код вашего устройства автору, чтобы открыть доступ.",
-  "allowed_devices": [
-    {
-      "id": "KV-6200-6507-4840",
-      "name": "Мой телефон (Redmi Note 9S)",
-      "enabled": true,
-      "expires_at": null
-    }
-  ],
+  "allowed_devices": [],
   "blocked_devices": []
 }
