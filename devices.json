@@ -10,6 +10,12 @@
       "name": "Друг (4840)",
       "enabled": true,
       "expires_at": null
+    },
+    {
+      "id": "KV-944B-E312-1765",
+      "name": "Друг (1765)",
+      "enabled": true,
+      "expires_at": null
     }
   ],
   "blocked_devices": []
