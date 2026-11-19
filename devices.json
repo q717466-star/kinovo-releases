@@ -4,6 +4,13 @@
   "owner_telegram": "kinovo_app",
   "offline_grace_hours": 24,
   "message": "Приложение Kinovo доступно только по приглашению. Отправьте код вашего устройства автору, чтобы открыть доступ.",
-  "allowed_devices": [],
+  "allowed_devices": [
+    {
+      "id": "KV-6200-6507-4840",
+      "name": "Друг (4840)",
+      "enabled": true,
+      "expires_at": null
+    }
+  ],
   "blocked_devices": []
 }
