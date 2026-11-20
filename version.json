@@ -1,6 +1,10 @@
 {
-    "apkUrl":  "https://raw.githubusercontent.com/q717466-star/kinovo-releases/main/app-release.apk",
-    "changelog":  "v1.2.74: Масштабное обновление Android TV в стиле Apple TV 4K (tvOS) — живая верхняя сцена предпросмотра (Dynamic Showcase Stage) с 16:9 фоном и бейджами 4K/Dolby Vision/Atmos без просадок FPS, точное сохранение фокуса карточки при возврате, долгое нажатие OK/MENU для добавления в Избранное (★), голосовой поиск с пульта и быстрые жанровые чипсы, раздел «Медиатека» и нативные «Настройки ТВ», согласование частоты кадров 24p (Match Frame Rate), приоритет чипов Amlogic/MediaTek/Realtek и фирменный баннер на домашнем экране ТВ.",
-    "versionCode":  101,
-    "versionName":  "1.2.74"
+  "version": "1.2.75",
+  "versionName": "1.2.75",
+  "versionCode": 102,
+  "changelog": "v1.2.75:\n• Плавный скролл и оптимизация интерфейса (облегчённый декодер билборда, ускоренный рендер карточек и полок)\n• Мгновенное открытие карточки фильма (название, описание и постер появляются сразу без долгого чёрного экрана)\n• Надёжное открытие всех фильмов и сериалов (быстрые таймауты и резервная загрузка данных при слабом/ограниченном TMDB)\n• Новый умный поиск: находит фильмы даже с опечатками и ошибками раскладки, показывает живые подсказки при вводе",
+  "downloadUrl": "https://raw.githubusercontent.com/q717466-star/kinovo-releases/main/app-release.apk",
+  "apkUrl": "https://raw.githubusercontent.com/q717466-star/kinovo-releases/main/app-release.apk",
+  "apkSize": 82718573,
+  "sha256": "e30c83644cf663881e83688d8dcb0539bf7af93f4666647261301489be875df6"
 }
